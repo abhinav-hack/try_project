@@ -13,12 +13,12 @@ com_model = build_combined_model()
 sr = 22050
 EPOCHS = 1
 # load audio files
-sound_file_path_list = access_file("/home/hacker/Documents/audio/vcc2016_data/try")
+sound_file_path_list = access_file("./SF1")
 
 #load model weights
 start = time.time()
 for epoch in range(EPOCHS):
-#    com_model.load_weights("/home/hacker/Documents/audio/model_check/checkpoint")
+#    com_model.load_weights("./checkpoint/chk")
 
     for sound_file in sound_file_path_list:
 
@@ -36,7 +36,7 @@ for epoch in range(EPOCHS):
         print(com_model.metrics_names, loss)
         stop = time.time()
         print(stop-start)
-    com_model.save_weights("/checkpoint")
+    com_model.save_weights("./checkpoint/chk")
 
 stop = time.time()
-print(stop-start)
+print(stop-start)   

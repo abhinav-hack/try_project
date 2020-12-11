@@ -27,8 +27,8 @@ def synthesize_dataset(signal, hop_length=256, n_mels=60, n_fft=2048, sr=22050):
     log_mel_trans = log_mel[..., np.newaxis].T
 
 
-    log_mel_trans = log_mel_trans.reshape((BATCH, 1, 60))
-    log_mel_trans = np.delete(log_mel_trans, BATCH-1, axis=0)   #(345, 1, 60)
+    log_mel_trans = log_mel_trans.reshape((BATCH, 60))
+    log_mel_trans = np.delete(log_mel_trans, BATCH-1, axis=0)   #(345, 60)
     #log_mel_trans = log_mel_trans.reshape(((BATCH-1)//N, N, 60))  #(69, 5, 60)
 
     #print(log_mel_trans.shape)
