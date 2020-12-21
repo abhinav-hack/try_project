@@ -18,7 +18,7 @@ sound_file_path_list = access_file("./SF1")
 #load model weights
 start = time.time()
 for epoch in range(EPOCHS):
-#    com_model.load_weights("./checkpoint/chk")
+    com_model.load_weights("./checkpoint/chk")
 
     for sound_file in sound_file_path_list:
 
@@ -36,7 +36,8 @@ for epoch in range(EPOCHS):
         print(com_model.metrics_names, loss)
         stop = time.time()
         print(stop-start)
+    print("saving checkpoints, Do not stop training")
     com_model.save_weights("./checkpoint/chk")
-
+    print("done, checkpoints saved.")
 stop = time.time()
 print(stop-start)   
