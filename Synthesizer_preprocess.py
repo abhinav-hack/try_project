@@ -13,8 +13,7 @@ from utils import *
 DATASET_PATH = "/home/hacker/Documents/audio/vcc2016_data"
 
 
-def synthesize_dataset(signal, hop_length=256, n_mels=60, n_fft=2048, sr=22050):
-    
+def synthesize_dataset(signal, hop_length=HOP_LENGTH, n_mels=N_MELS, n_fft=N_FFT, sr=SR):    
     """
         prepare mel spectrogram from the audio files """ 
 
@@ -23,24 +22,32 @@ def synthesize_dataset(signal, hop_length=256, n_mels=60, n_fft=2048, sr=22050):
     mel = librosa.feature.melspectrogram(signal, sr=sr, hop_length=hop_length, n_fft=n_fft, n_mels=n_mels)
 
     log_mel = librosa.power_to_db(mel)
+    # Chroma displays energy of each pitch class
+    chromagram = librosa.feature.chroma_stft(signal, sr=sr, hop_length=hop_length)
+    chromagram = np.delete(chromagram,  int(SAMPLE_LEN/hop_length), axis=1).T
+    zero_crossings = librosa.zero_crossings(signal, pad=False)
+    zero_crossings = zero_crossings.reshape((int(SAMPLE_LEN/hop_length), hop_length)).sum(axis=1)/hop_length
+    zero_crossings = zero_crossings.reshape((int(SAMPLE_LEN/hop_length), 1))
 
     log_mel_trans = log_mel[..., np.newaxis].T
-
-
+    
+    chrom_zero = np.concatenate((chromagram, zero_crossings), axis=1)
     log_mel_trans = log_mel_trans.reshape((BATCH, n_mels))
-    log_mel_trans = np.delete(log_mel_trans, BATCH-1, axis=0)   #(345, 60)
+    log_mel_trans = np.delete(log_mel_trans, int(SAMPLE_LEN/hop_length), axis=0)   #(345, 60)
     #log_mel_trans = log_mel_trans.reshape(((BATCH-1)//N, N, 60))  #(69, 5, 60)
 
-    #print(log_mel_trans.shape)
+    log_mel_chrom = np.concatenate((log_mel_trans, chrom_zero), axis=1)
+   
+    print(log_mel_chrom.shape)
 
-    return log_mel_trans
+    return log_mel_chrom
 
 def plot_spec(signal, sr, hop_length=HOP_LENGTH, x_axis='time', y_axis='mel'):
                     plt.figure(figsize=(25, 10))
                     librosa.display.specshow(signal, 
                                             x_axis=x_axis,
                                             y_axis=y_axis, 
-                                            hop_length=HOP_LENGTH,
+                                            hop_length=hop_length,
                                             sr=sr)
                     plt.colorbar(format="%+2.f")
                     plt.show()
