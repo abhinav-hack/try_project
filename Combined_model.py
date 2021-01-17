@@ -14,9 +14,10 @@ from Synthesizer_preprocess import *
 from Encoder_preprocess import *
 
 
-def my_loss_fn(y, a):
-    cross_ent = ((1+y)/2*tf.math.log(a))+((1-y)/2*tf.math.log(1-a))
-    return tf.reduce_mean(cross_ent, axis=-1)
+def my_loss_fn(y_true, y_pred):
+    absolute = y_true-y_pred
+    return tf.reduce_mean(absolute, axis=-1)
+
 
 
 def build_combined_model():
@@ -27,7 +28,7 @@ def build_combined_model():
     comb_lyr = concatenate([encoder.output, synthesizer.output])
     output_model = vocoder(comb_lyr)
     combined = Model(inputs=[encoder.input, synthesizer.input], outputs=output_model, name='combined')
-    combined.compile(optimizer=Adam(learning_rate=1e-8), loss='mean_absolute_error', metrics=['accuracy'])
+    combined.compile(optimizer=Adam(learning_rate=1e-8), loss=my_loss_fn, metrics=['accuracy'])
     keras.utils.plot_model(combined, show_shapes=True)
     combined.summary()
     return combined
