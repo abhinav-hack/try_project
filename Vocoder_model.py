@@ -15,8 +15,9 @@ def build_vocoder():
     building vocoder model
     """
     voc_inputs = Input(shape = (320,))
-    dense_lyr = Dense(512)(voc_inputs)
-    dense_lyr = Dense(512)(dense_lyr)
+    dense_lyr = Dense(512,  kernel_initializer='zeros',
+    bias_initializer='zeros')(voc_inputs)
+    dense_lyr = Dense(512, activation='tanh')(dense_lyr)
     voc_output = Dense(256, activation='tanh')(dense_lyr)
     vocoder = Model(inputs=voc_inputs, outputs=voc_output, name = 'vocoder')
     vocoder.summary()

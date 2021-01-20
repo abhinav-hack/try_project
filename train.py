@@ -13,13 +13,13 @@ com_model = build_combined_model()
 sr = 22050
 EPOCHS = 1
 # load audio files
-sound_file_path_list = access_file("./SF1")
+sound_file_path_list = access_file("./try")
 
 #load model weights
 start = time.time()
 for epoch in range(EPOCHS):
     print("Epochs : " , epoch)
-    com_model.load_weights("./checkpoint/chk")
+    #com_model.load_weights("./checkpoint/chk")
 
     for sound_file in sound_file_path_list:
 
